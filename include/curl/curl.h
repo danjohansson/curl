@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2021, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2022, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -165,6 +165,13 @@ typedef enum {
 /* deprecated names: */
 #define CURLSSLBACKEND_CYASSL CURLSSLBACKEND_WOLFSSL
 #define CURLSSLBACKEND_DARWINSSL CURLSSLBACKEND_SECURETRANSPORT
+
+/* bits for the CURLOPT_FOLLOWLOCATION option */
+#define CURLFOLLOW_ENABLE (1<<0) /* generic follow redirects */
+
+/* Follow redirects, and don't use the custom method for anything but the
+   initial request if the response code says so. */
+#define CURLFOLLOW_NO_CUSTOMMETHOD (1<<1)
 
 struct curl_httppost {
   struct curl_httppost *next;       /* next entry in the list */
