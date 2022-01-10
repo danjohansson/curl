@@ -562,6 +562,7 @@ static CURLcode readwrite_data(struct Curl_easy *data,
                                int *didwhat, bool *done,
                                bool *comeback)
 {
+  bool curl_again = FALSE;
   CURLcode result = CURLE_OK;
   ssize_t nread; /* number of bytes read */
   size_t excess = 0; /* excess bytes read */
@@ -606,8 +607,10 @@ static CURLcode readwrite_data(struct Curl_easy *data,
       result = Curl_read(data, conn->sockfd, buf, bytestoread, &nread);
 
       /* read would've blocked */
-      if(CURLE_AGAIN == result)
+      if(CURLE_AGAIN == result) {
+        curl_again = TRUE;
         break; /* get out of loop */
+      }
 
       if(result>0)
         return result;
@@ -887,7 +890,7 @@ static CURLcode readwrite_data(struct Curl_easy *data,
 
   } while(data_pending(data) && maxloops--);
 
-  if(maxloops <= 0) {
+  if(maxloops <= 0 || curl_again) {
     /* we mark it as read-again-please */
     conn->cselect_bits = CURL_CSELECT_IN;
     *comeback = TRUE;
